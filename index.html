@@ -131,6 +131,7 @@
       .scrollbar-none::-webkit-scrollbar {
         display: none;
       }
+
     </style>
   </head>
   <body>
@@ -140,10 +141,8 @@
       import React, { useEffect, useRef, useState } from "react";
       import { createRoot } from "react-dom/client";
       import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
-      import Hls from "hls.js";
 
       const h = React.createElement;
-      const bgStream = "https://stream.mux.com/tLkHO1qZoaaQOUeVWo8hEBeGQfySP02EPS02BmnNFyXys.m3u8";
       const localVideo = "./assets/《东海遗梦》AIGC.mp4";
       const xiaoluoVideo = "./assets/xiaoluo-video.mp4";
       const fengtianVideo = "./assets/fengtian-video.mp4";
@@ -156,11 +155,14 @@
       const yananVideo = "./assets/yanan-video.mp4";
       const tianwenVideo = "./assets/tianwen-video.mp4";
       const qifengVideo = "./assets/qifeng-video.mp4";
+      const coscoShipserviceVideo = "./assets/cosco-shipservice-video.mp4";
+      const coscoEnergyVideo = "./assets/cosco-energy-video.mp4";
+      const liaoningVideo = "./assets/liaoning-promo-video.mp4";
 
       const navItems = [
         ["简介", "#profile"],
-        ["作品", "#works"],
-        ["视频", "#video"],
+        ["目录", "#selected-works"],
+        ["作品", "#video"],
         ["联系", "#contact"],
       ];
 
@@ -189,12 +191,30 @@
         "AUTOCAD",
         "D5 RENDER",
         "NANO BANANA",
-        "MIDJOURNEY",
+        "FIGMA",
         "即梦AI",
         "可灵AI",
         "Codex",
         "Chat GPT",
       ];
+
+      const softwareIconMap = {
+        ILLUSTRATOR: { src: "./assets/skill-icon-illustrator.png" },
+        PHOTOSHOP: { src: "./assets/skill-icon-photoshop.png" },
+        "CINEMA 4D": { src: "./assets/skill-icon-cinema4d.png" },
+        "AFTER EFFECTS": { src: "./assets/skill-icon-aftereffects.png" },
+        PREMIERE: { src: "./assets/skill-icon-premiere.png" },
+        "3DS MAX": { src: "./assets/skill-icon-3dsmax.png" },
+        SKETCHUP: { src: "./assets/skill-icon-sketchup.png" },
+        AUTOCAD: { src: "./assets/skill-icon-autocad.png" },
+        "D5 RENDER": { src: "./assets/skill-icon-d5.png" },
+        "NANO BANANA": { src: "./assets/skill-icon-nanobanana.png" },
+        FIGMA: { src: "./assets/skill-icon-figma.png" },
+        "即梦AI": { src: "./assets/skill-icon-jimeng.png" },
+        "可灵AI": { src: "./assets/skill-icon-kling.png" },
+        Codex: { src: "./assets/skill-icon-codex.png" },
+        "Chat GPT": { src: "./assets/skill-icon-chatgpt.png" },
+      };
 
       const coreSkills = [
         "AIGC全流程制作",
@@ -217,8 +237,8 @@
       ];
 
       const fengtianStoryboardImages = [
-        { src: "./assets/fengtian-2.png", alt: "奉天职造局创意说明" },
-        { src: "./assets/fengtian-3.png", alt: "奉天职造局元素提取" },
+        { src: "./assets/fengtian-creative-new.png", alt: "奉天职造局创意说明" },
+        { src: "./assets/fengtian-elements-new.png", alt: "奉天职造局元素提取" },
       ];
 
       const fengtianIpImages = [
@@ -238,7 +258,7 @@
       const xiaoluoSceneImages = [
         { src: "./assets/xiaoluo-2.png", alt: "小萝卜头的梦画面二" },
         { src: "./assets/xiaoluo-3.png", alt: "小萝卜头的梦画面三" },
-        { src: "./assets/xiaoluo-4.png", alt: "小萝卜头的梦画面四" },
+        { src: "./assets/xiaoluo-4-bottom-3q.jpg", alt: "小萝卜头的梦画面四" },
       ];
 
       const xiaoluoPosterImages = [
@@ -273,9 +293,9 @@
       ];
 
       const muguiyingIpImages = [
-        { src: "./assets/muguiying-ip-row-01.jpg", alt: "桂影傲骨 IP 形象介绍与三视图一" },
-        { src: "./assets/muguiying-ip-row-03.jpg", alt: "桂影傲骨 IP 形象介绍与三视图三" },
         { src: "./assets/muguiying-ip-row-02.jpg", alt: "桂影傲骨 IP 形象介绍与三视图二" },
+        { src: "./assets/muguiying-ip-row-03.jpg", alt: "桂影傲骨 IP 形象介绍与三视图三" },
+        { src: "./assets/muguiying-ip-row-01.jpg", alt: "桂影傲骨 IP 形象介绍与三视图一" },
         { src: "./assets/muguiying-ip-row-04.jpg", alt: "桂影傲骨 IP 形象介绍与三视图四" },
       ];
 
@@ -326,7 +346,7 @@
         { src: "./assets/piyingxi-28.png", alt: "皮影戏项目画面二十八" },
         { src: "./assets/piyingxi-29.png", alt: "皮影戏项目画面二十九" },
         { src: "./assets/piyingxi-30.png", alt: "皮影戏项目画面三十" },
-        { src: "./assets/piyingxi-31.png", alt: "皮影戏项目画面三十一" },
+        { src: "./assets/piyingxi-31-21x9.jpg", alt: "皮影戏项目画面三十一" },
         { src: "./assets/piyingxi-32.png", alt: "皮影戏项目画面三十二" },
       ];
 
@@ -356,10 +376,73 @@
         { src: "./assets/qifeng-ending.png", alt: "起风时片尾" },
       ];
 
+      const coscoShipserviceImages = [
+        { src: "./assets/cosco-shipservice-01.png", alt: "数智船服沙龙分镜一" },
+        { src: "./assets/cosco-shipservice-02.png", alt: "数智船服沙龙分镜二" },
+        { src: "./assets/cosco-shipservice-03.png", alt: "数智船服沙龙分镜三" },
+        { src: "./assets/cosco-shipservice-04.png", alt: "数智船服沙龙分镜四" },
+      ];
+
+      const coscoEnergyImages = [
+        { src: "./assets/cosco-energy-poster.png", alt: "中原能源视频原视频封面" },
+        { src: "./assets/cosco-energy-01.png", alt: "中原能源视频分镜一" },
+        { src: "./assets/cosco-energy-02.png", alt: "中原能源视频分镜二" },
+        { src: "./assets/cosco-energy-03.png", alt: "中原能源视频分镜三" },
+      ];
+
       const kanjianImages = [
         { src: "./assets/kanjian-01.png", alt: "看见我的也看见你项目画面一" },
         { src: "./assets/kanjian-02.png", alt: "看见我的也看见你项目画面二" },
         { src: "./assets/kanjian-03.png", alt: "看见我的也看见你项目画面三" },
+      ];
+
+      const brandProjects = [
+        {
+          id: "baolong-brand",
+          eyebrow: "BAOLONG TEMPLE BRAND DESIGN",
+          title: "抱龙禅院品牌设计",
+          type: "品牌设计",
+          english: "Brand Identity Design",
+          color: "#f59e0b",
+          cover: "./assets/brand-baolong-hero.png",
+          images: [
+            { src: "./assets/brand-baolong-hero.png", alt: "抱龙禅院品牌主视觉" },
+            { src: "./assets/brand-baolong-idea.png", alt: "抱龙禅院品牌理念" },
+            { src: "./assets/brand-baolong-standard.png", alt: "抱龙禅院标识规范" },
+            { src: "./assets/brand-baolong-logo-evolution.png", alt: "抱龙禅院标识推演" },
+            { src: "./assets/brand-baolong-product.png", alt: "抱龙禅院品牌物料展示" },
+          ],
+        },
+        {
+          id: "chenxiaoxi-ip",
+          eyebrow: "CHEN XIAOXI IP DESIGN",
+          title: "辰小熙IP设计",
+          type: "IP设计",
+          english: "IP Character Design",
+          color: "#eab308",
+          cover: "./assets/brand-chenxiaoxi-hero.png",
+          images: [
+            { src: "./assets/brand-chenxiaoxi-hero.png", alt: "辰小熙IP主视觉" },
+            { src: "./assets/brand-chenxiaoxi-ip.png", alt: "辰小熙IP角色设定" },
+            { src: "./assets/brand-chenxiaoxi-story.png", alt: "辰小熙故事画面" },
+            { src: "./assets/brand-chenxiaoxi-scenes.png", alt: "辰小熙场景传播" },
+            { src: "./assets/brand-chenxiaoxi-product.png", alt: "辰小熙品牌物料展示" },
+          ],
+        },
+        {
+          id: "wenguanjie-case",
+          eyebrow: "WENGUAN STREET CASE DESIGN",
+          title: "文官街全案设计",
+          type: "全案设计",
+          english: "Integrated Brand Design",
+          color: "#78c96f",
+          cover: "./assets/brand-wenguanjie-logo.png",
+          images: [
+            { src: "./assets/brand-wenguanjie-logo.png", alt: "文官街标识设计" },
+            { src: "./assets/brand-wenguanjie-system.png", alt: "文官街视觉系统" },
+            { src: "./assets/brand-wenguanjie-case.png", alt: "文官街全案设计展示" },
+          ],
+        },
       ];
 
       const selectedWorkLinks = [
@@ -367,67 +450,180 @@
           href: "#east-sea",
           title: "东海遗梦",
           type: "AIGC短片设计",
+          category: "concept",
           color: "#4aa8ff",
-        },
-        {
-          href: "#xiaoluo",
-          title: "小萝卜头的梦",
-          type: "XR虚拟现实电影",
-          color: "#e44a36",
-        },
-        {
-          href: "#fengtian",
-          title: "奉天职造局",
-          type: "AIGC短片设计",
-          color: "#f0ad4e",
-        },
-        {
-          href: "#long",
-          title: "龍在囧途",
-          type: "AIGC动画设计",
-          color: "#ff7ab8",
-        },
-        {
-          href: "#muguiying",
-          title: "桂影傲骨",
-          type: "AIGC动画设计",
-          color: "#9b6cff",
-        },
-        {
-          href: "#dongpo",
-          title: "东坡奇旅",
-          type: "AI+XR虚拟现实电影",
-          color: "#5ed29c",
-        },
-        {
-          href: "#yanan",
-          title: "长征记忆·到延安去",
-          type: "XR虚拟现实电影",
-          color: "#f28c28",
-        },
-        {
-          href: "#tianwen",
-          title: "神游东方宇宙",
-          type: "MR虚拟体验",
-          color: "#7dd3fc",
+          preview: "./assets/east-sea-poster-match.jpg",
         },
         {
           href: "#piyingxi",
           title: "皮影戏",
           type: "C4D概念短片设计",
+          category: "concept",
           color: "#c8955d",
-        },
-        {
-          href: "#qifeng",
-          title: "起风时",
-          type: "AIGC动画设计",
-          color: "#b7e46a",
+          preview: "./assets/piyingxi-poster-match.jpg",
         },
         {
           href: "#kanjian",
           title: "看见我的，也看见你",
           type: "AIGC概念短片",
-          color: "#ff6b8f",
+          category: "concept",
+          color: "#facc15",
+          preview: "./assets/kanjian-01.png",
+        },
+        {
+          href: "#xiaoluo",
+          title: "小萝卜头的梦",
+          type: "XR虚拟现实电影",
+          category: "xr",
+          color: "#e44a36",
+          preview: "./assets/xiaoluo-poster-match.jpg",
+        },
+        {
+          href: "#dongpo",
+          title: "东坡奇旅",
+          type: "AI+XR虚拟现实电影",
+          category: "xr",
+          color: "#5ed29c",
+          preview: "./assets/dongpo-poster-match.jpg",
+        },
+        {
+          href: "#tianwen",
+          title: "神游东方宇宙",
+          type: "MR虚拟体验",
+          category: "xr",
+          color: "#7dd3fc",
+          preview: "./assets/tianwen-poster-match.jpg",
+        },
+        {
+          href: "#yanan",
+          title: "长征记忆·到延安去",
+          type: "XR虚拟现实电影",
+          category: "xr",
+          color: "#f28c28",
+          preview: "./assets/yanan-poster-latest.png",
+        },
+        {
+          href: "#fengtian",
+          title: "奉天职造局",
+          type: "AIGC动画设计",
+          category: "animation",
+          color: "#f0ad4e",
+          preview: "./assets/fengtian-poster-match.jpg",
+        },
+        {
+          href: "#long",
+          title: "龍在囧途",
+          type: "AIGC动画设计",
+          category: "animation",
+          color: "#ff7ab8",
+          preview: "./assets/long-poster-match.jpg",
+        },
+        {
+          href: "#muguiying",
+          title: "桂影傲骨",
+          type: "AIGC动画设计",
+          category: "animation",
+          color: "#9b6cff",
+          preview: "./assets/muguiying-poster-match.jpg",
+        },
+        {
+          href: "#qifeng",
+          title: "起风时",
+          type: "AIGC动画设计",
+          category: "animation",
+          color: "#b7e46a",
+          preview: "./assets/qifeng-poster-latest.png",
+        },
+        {
+          href: "#cosco",
+          title: "数智船服沙龙",
+          type: "AIGC宣传视频",
+          category: "corporate",
+          color: "#38bdf8",
+          preview: "./assets/cosco-shipservice-poster.png",
+        },
+        {
+          href: "#cosco-energy",
+          title: "中原能源视频",
+          type: "AIGC宣传视频",
+          category: "corporate",
+          color: "#7dd3fc",
+          preview: "./assets/cosco-energy-02.png",
+        },
+        {
+          href: "#liaoning-promo",
+          title: "第三届辽宁校企协同宣传片",
+          type: "AIGC宣传视频",
+          category: "corporate",
+          color: "#60a5fa",
+          preview: "./assets/liaoning-promo-poster.jpg",
+        },
+        {
+          href: "#baolong-brand",
+          title: "抱龙禅院品牌设计",
+          type: "品牌设计",
+          category: "brand",
+          color: "#f59e0b",
+          preview: "./assets/brand-baolong-hero.png",
+        },
+        {
+          href: "#chenxiaoxi-ip",
+          title: "辰小熙IP设计",
+          type: "IP设计",
+          category: "brand",
+          color: "#eab308",
+          preview: "./assets/brand-chenxiaoxi-hero.png",
+        },
+        {
+          href: "#wenguanjie-case",
+          title: "文官街全案设计",
+          type: "全案设计",
+          category: "brand",
+          color: "#78c96f",
+          preview: "./assets/brand-wenguanjie-logo.png",
+        },
+      ];
+
+      const workCategories = [
+        {
+          key: "concept",
+          title: "概念短片设计",
+          sideTitle: ["概念短片", "设计"],
+          english: "Concept Short Film Design",
+          color: "#4aa8ff",
+          works: selectedWorkLinks.filter((work) => work.category === "concept"),
+        },
+        {
+          key: "xr",
+          title: "XR虚拟电影",
+          sideTitle: ["XR虚拟", "电影"],
+          english: "XR Virtual Film",
+          color: "#e44a36",
+          works: selectedWorkLinks.filter((work) => work.category === "xr"),
+        },
+        {
+          key: "animation",
+          title: "AIGC动画设计",
+          sideTitle: ["AIGC动画", "设计"],
+          english: "AIGC Animation Design",
+          color: "#f0ad4e",
+          works: selectedWorkLinks.filter((work) => work.category === "animation"),
+        },
+        {
+          key: "corporate",
+          title: "AIGC企业视频设计",
+          sideTitle: ["AIGC企业", "视频设计"],
+          english: "AIGC Corporate Video Design",
+          color: "#38bdf8",
+          works: selectedWorkLinks.filter((work) => work.category === "corporate"),
+        },
+        {
+          key: "brand",
+          title: "品牌设计",
+          sideTitle: ["品牌设计"],
+          english: "Brand Design",
+          color: "#f59e0b",
+          works: selectedWorkLinks.filter((work) => work.category === "brand"),
         },
       ];
 
@@ -441,10 +637,10 @@
       ];
 
       const qrEntries = [
-        ["微信", "qr-wechat-square.png"],
-        ["新片场主页", "qr-xinpianchang-128.png"],
-        ["站酷主页", "qr-zcool-square.png"],
-        ["抖音主页", "qr-douyin-square.png"],
+        ["微信", "qr-wechat-aligned.png"],
+        ["新片场主页", "qr-xinpianchang-aligned.png"],
+        ["站酷主页", "qr-zcool-aligned.png"],
+        ["抖音主页", "qr-douyin-aligned.png"],
       ];
 
       const internships = [
@@ -461,10 +657,10 @@
         ["2026.04", "重庆红岩革命历史博物馆", "《小萝卜头的梦》XR虚拟现实电影"],
         ["2026.04", "延安旅游集团", "《长征记忆·到延安去》XR穿越之旅"],
         ["2026.05", "眉山三苏祠博物馆", "《东坡奇旅》AI+XR互动"],
-        ["2026.05", "中远海运船服", "《“数智船服沙龙”》视频及宣传片"],
+        ["2026.05", "中远海运船服", "《“数智船服沙龙”》AIGC宣传视频"],
         ["2026.06", "上海天文馆", "《神游东方宇宙》MR虚拟体验"],
         ["2026.06", "京东", "《618负鼠产品广告》"],
-        ["2026.06", "中远海运集团", "《中远会议动画串场》"],
+        ["2026.06", "中远海运集团", "《中原能源视频》"],
       ];
 
       const campusExperiences = [
@@ -510,37 +706,6 @@
         "2023-2024建筑与艺术学院“优秀青年志愿者”",
       ];
 
-      function BackgroundVideo() {
-        const videoRef = useRef(null);
-
-        useEffect(() => {
-          const video = videoRef.current;
-          if (!video) return undefined;
-
-          if (Hls.isSupported()) {
-            const hls = new Hls({ enableWorker: false });
-            hls.loadSource(bgStream);
-            hls.attachMedia(video);
-            return () => hls.destroy();
-          }
-
-          if (video.canPlayType("application/vnd.apple.mpegurl")) {
-            video.src = bgStream;
-          }
-
-          return undefined;
-        }, []);
-
-        return h("video", {
-          ref: videoRef,
-          className: "absolute inset-0 h-full w-full object-cover opacity-60",
-          autoPlay: true,
-          muted: true,
-          loop: true,
-          playsInline: true,
-        });
-      }
-
       function Header() {
         const [open, setOpen] = useState(false);
         const linkClass =
@@ -550,7 +715,7 @@
 
         return h(
           "header",
-          { className: "absolute left-0 right-0 top-0 z-50 px-5 py-5 md:px-10" },
+          { className: "fixed left-0 right-0 top-0 z-50 bg-ink/68 px-5 py-2.5 backdrop-blur-sm md:px-10" },
           h(
             "div",
             { className: "mx-auto flex max-w-7xl items-center justify-between" },
@@ -561,7 +726,7 @@
                 className: "font-jakarta text-sm font-extrabold uppercase tracking-normal text-white",
                 "aria-label": "Go to top",
               },
-              "个人作品集"
+              "LIZHENGHAO"
             ),
             h(
               "nav",
@@ -588,7 +753,7 @@
               h(
                 "div",
                 { className: "flex items-center justify-between" },
-                h("div", { className: "font-jakarta text-sm font-extrabold uppercase text-white" }, "个人作品集"),
+                h("div", { className: "font-jakarta text-sm font-extrabold uppercase text-white" }, "LIZHENGHAO"),
                 h(
                   "button",
                   {
@@ -627,78 +792,32 @@
           {
             id: "top",
             className:
-              "relative flex min-h-[92vh] overflow-hidden bg-ink px-5 pb-8 pt-28 md:items-center md:px-10 md:pt-24",
+              "relative flex min-h-screen overflow-hidden bg-ink px-5 pb-8 pt-28 md:items-center md:px-10 md:pt-24",
           },
-          h(BackgroundVideo),
-          h("div", {
-            className:
-              "absolute inset-0 bg-[linear-gradient(90deg,#070b0a_0%,rgba(7,11,10,0.86)_24%,rgba(7,11,10,0.14)_72%,rgba(7,11,10,0)_100%)]",
-          }),
-          h("div", {
-            className:
-              "absolute inset-0 bg-[linear-gradient(0deg,#070b0a_0%,rgba(7,11,10,0.86)_8%,rgba(7,11,10,0.16)_45%,rgba(7,11,10,0)_100%)]",
-          }),
-          h(
-            "div",
-            { className: "pointer-events-none absolute inset-0 hidden md:block" },
-            [25, 50, 75].map((left) =>
-              h("span", {
-                key: left,
-                className: "absolute top-0 h-full w-px bg-white/10",
-                style: { left: `${left}%` },
-              })
-            )
-          ),
-          h(
-            "svg",
-            {
-              className: "pointer-events-none absolute left-1/2 top-[12%] h-44 w-[900px] -translate-x-1/2 opacity-70",
-              viewBox: "0 0 900 180",
-              fill: "none",
-              "aria-hidden": "true",
-            },
-            h("defs", null, h("filter", { id: "heroGlow", x: "-20%", y: "-80%", width: "140%", height: "260%" }, h("feGaussianBlur", { stdDeviation: "25" }))),
-            h("ellipse", {
-              cx: "450",
-              cy: "80",
-              rx: "330",
-              ry: "28",
-              fill: "#e1352d",
-              opacity: "0.36",
-              filter: "url(#heroGlow)",
-            }),
-            h("ellipse", {
-              cx: "450",
-              cy: "92",
-              rx: "220",
-              ry: "16",
-              fill: "#3c0c0a",
-              opacity: "0.7",
-              filter: "url(#heroGlow)",
-            })
-          ),
           h(Header),
           h(
             "div",
-            { className: "relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-end md:min-h-[70vh]" },
+            { className: "relative z-10 mx-auto grid w-full max-w-7xl gap-10 md:min-h-[76vh] md:grid-cols-[1fr_260px] md:items-end" },
             h(
               "div",
-              { className: "max-w-3xl" },
+              { className: "max-w-4xl" },
               h(
                 "p",
                 {
                   className:
-                    "-translate-y-2 font-jakarta text-base font-extrabold uppercase tracking-normal text-mint md:text-xl",
+                    "font-jakarta text-sm font-extrabold uppercase tracking-[0.28em] text-mint md:text-base",
                 },
-                "LI ZHENGHAO",
-                h("span", { className: "text-white" }, "#")
+                "AIGC FILM / MOTION DESIGN"
               ),
               h(
                 "h1",
                 {
                   className:
-                    "mt-6 font-inter text-[48px] font-black uppercase leading-[0.92] tracking-tight bright-gray sm:text-[68px] lg:text-[88px]",
+                    "mt-7 font-inter text-[54px] font-black uppercase leading-[1.02] tracking-tight bright-gray sm:text-[78px] lg:text-[104px]",
                 },
+                "LI ZHENGHAO",
+                h("span", { className: "text-white" }, "#"),
+                h("br"),
                 "个人作品集",
                 h("span", { className: "text-mint" }, ".")
               ),
@@ -706,21 +825,21 @@
                 "p",
                 {
                   className:
-                    "mt-6 max-w-2xl font-inter text-base leading-8 text-[#cfcfcf] md:text-lg",
+                    "mt-7 max-w-2xl font-inter text-base font-semibold leading-8 text-[#d8d8d8] md:text-lg",
                 },
                 "AIGC 三维动态影视设计 / 短片影像 / 概念视觉 / 动态合成"
               ),
               h(
-                "a",
+                "p",
                 {
-                  href: "#works",
                   className:
-                    "mt-8 inline-flex items-center gap-3 rounded-full bg-mint px-7 py-3.5 font-inter text-sm font-extrabold uppercase text-ink transition hover:bg-white md:text-base",
+                    "mt-9 inline-flex items-center border border-mint/70 bg-black/25 px-8 py-3 font-inter text-sm font-extrabold uppercase tracking-[0.24em] text-mint md:text-base",
                 },
-                "查看作品",
-                h(ArrowRight, { size: 17 })
-              )
-            )
+                "欢迎观览"
+              ),
+              null
+            ),
+            h("div", { className: "hidden md:block" })
           )
         );
       }
@@ -732,6 +851,44 @@
           h("p", { className: "font-jakarta text-sm font-extrabold uppercase text-mint md:text-base" }, eyebrow),
           h("h3", { className: "mt-2 font-inter text-2xl font-black tracking-tight bright-gray md:text-4xl" }, title),
           h("div", { className: "mt-6" }, children)
+        );
+      }
+
+      function FoldableProfileBlock({ eyebrow, title, children }) {
+        const [open, setOpen] = useState(false);
+
+        return h(
+          "section",
+          { className: "border-t border-white/10 pt-7" },
+          h(
+            "button",
+            {
+              type: "button",
+              className:
+                "group flex w-full items-center justify-between gap-4 text-left",
+              onClick: () => setOpen((value) => !value),
+              "aria-expanded": open,
+            },
+            h(
+              "span",
+              null,
+              h("span", { className: "font-jakarta text-sm font-extrabold uppercase text-mint md:text-base" }, eyebrow),
+              h("span", { className: "mt-2 block font-inter text-2xl font-black tracking-tight bright-gray md:text-4xl" }, title)
+            ),
+            h(
+              "span",
+              {
+                className:
+                  "flex h-12 w-12 shrink-0 items-center justify-center border border-mint/45 text-mint transition group-hover:bg-mint group-hover:text-ink",
+              },
+              h(ChevronDown, {
+                size: 22,
+                strokeWidth: 2.4,
+                className: `transition-transform ${open ? "rotate-180" : ""}`,
+              })
+            )
+          ),
+          open ? h("div", { className: "mt-6" }, children) : null
         );
       }
 
@@ -877,19 +1034,19 @@
                     )
                   ),
                   h(
-                    ProfileBlock,
+                    FoldableProfileBlock,
                     { eyebrow: "Campus", title: "校园经历" },
                     h(TimelineRows, { rows: campusExperiences })
                   )
                 ),
                 h(
-                  ProfileBlock,
+                  FoldableProfileBlock,
                   { eyebrow: "Awards", title: "获奖经历" },
                   h(AwardList, { items: [...designAwards, ...campusAwards], compact: true })
                 )
               ),
               h(
-                ProfileBlock,
+                FoldableProfileBlock,
                 { eyebrow: "Projects", title: "项目经历" },
                 h(
                   "div",
@@ -914,7 +1071,41 @@
         );
       }
 
+      function SoftwareSkillItem({ skill }) {
+        const icon = softwareIconMap[skill] || { mark: skill.slice(0, 2), bg: "#e1352d", fg: "#070b0a" };
+
+        return h(
+          "div",
+          {
+            className:
+              "group flex min-h-9 items-center justify-between gap-3 border border-white/10 bg-white/[0.015] px-3 py-2 transition hover:border-mint/65 hover:bg-white/[0.045]",
+          },
+          h("p", { className: "font-inter text-xs font-bold uppercase leading-5 text-[#d8d8d8] md:text-sm" }, skill),
+          icon.src
+            ? h("img", {
+                src: icon.src,
+                alt: `${skill} 图标`,
+                className:
+                  "h-8 w-8 shrink-0 translate-x-1 object-cover opacity-0 shadow-[0_8px_18px_rgba(0,0,0,0.35)] transition group-hover:translate-x-0 group-hover:opacity-100",
+              })
+            : h(
+                "span",
+                {
+                  className:
+                    "flex h-8 min-w-8 translate-x-1 items-center justify-center px-1.5 font-jakarta text-[10px] font-extrabold uppercase opacity-0 shadow-[0_8px_18px_rgba(0,0,0,0.35)] transition group-hover:translate-x-0 group-hover:opacity-100",
+                  style: { backgroundColor: icon.bg, color: icon.fg },
+                },
+                icon.mark
+              )
+        );
+      }
+
       function Works() {
+        const [openCategories, setOpenCategories] = useState({});
+        const toggleCategory = (key) => {
+          setOpenCategories((current) => ({ ...current, [key]: !current[key] }));
+        };
+
         return h(
           "section",
           { id: "works", className: "bg-ink px-5 pb-0 pt-14 md:px-10 md:pt-20" },
@@ -933,7 +1124,7 @@
                   "div",
                   { className: "mt-6 grid grid-cols-2 gap-x-8 gap-y-3 border-t border-white/10 pt-5 md:grid-cols-3" },
                   softwareSkills.map((skill) =>
-                    h("p", { key: skill, className: "font-inter text-sm font-bold uppercase leading-5 text-[#d8d8d8] md:text-base" }, skill)
+                    h(SoftwareSkillItem, { key: skill, skill })
                   )
                 )
               ),
@@ -956,45 +1147,173 @@
               { className: "border-b border-white/10 pb-8" },
               h(
                 "div",
-                null,
+                { id: "selected-works", className: "scroll-mt-24" },
                 h("p", { className: "font-jakarta text-sm font-extrabold uppercase text-mint md:text-base" }, "PORTFOLIO & CONTENTS"),
                 h("h2", { className: "mt-3 font-inter text-5xl font-black uppercase leading-none tracking-tight bright-gray md:text-7xl" }, "SELECTED WORKS", h("span", { className: "text-mint" }, "*"))
               ),
               h(
                 "nav",
-                { className: "mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3", "aria-label": "作品快速入口" },
-                selectedWorkLinks.map((work, index) =>
-                  work.placeholder
-                    ? h("div", {
-                        key: `placeholder-${index}`,
-                        className: "min-h-[112px] border border-white/10 bg-white/[0.015] md:min-h-[138px]",
-                        "aria-hidden": true,
-                      })
-                    :
+                { className: "mt-8 grid gap-5", "aria-label": "作品分类快速入口" },
+                workCategories.map((category) => {
+                  const isOpen = !!openCategories[category.key];
+
+                  return h(
+                    "section",
+                    { key: category.key, className: "border bg-white/[0.012] p-3 md:p-4", style: { borderColor: `${category.color}66` } },
+                    h(
+                      "button",
+                      {
+                        type: "button",
+                        className: "flex w-full flex-wrap items-end justify-between gap-3 border-b pb-3 text-left",
+                        style: { borderBottomColor: `${category.color}55` },
+                        onClick: () => toggleCategory(category.key),
+                        "aria-expanded": isOpen,
+                      },
+                      h(
+                        "span",
+                        null,
+                        h("span", { className: "block font-jakarta text-[10px] font-extrabold uppercase tracking-[0.22em]", style: { color: category.color } }, category.english),
+                        h("span", { className: "mt-1 block font-inter text-xl font-black tracking-tight bright-gray md:text-3xl" }, category.title)
+                      ),
+                      h(
+                        "span",
+                        { className: "flex items-center gap-3 font-jakarta text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#d8d8d8]" },
+                        category.english,
+                        h(ChevronDown, {
+                          size: 16,
+                          strokeWidth: 2.4,
+                          className: `transition-transform ${isOpen ? "rotate-180" : ""}`,
+                          style: { color: category.color },
+                        })
+                      )
+                    ),
+                    isOpen
+                      ? h(
+                          "div",
+                          { className: `mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 ${category.works.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}` },
+                          category.works.map((work, index) =>
+                            h(
+                              work.pending ? "div" : "a",
+                              {
+                                key: `${work.href}-${work.title}`,
+                                ...(work.pending ? {} : { href: work.href }),
+                                className:
+                                  `group flex min-h-[74px] items-end justify-between border bg-white/[0.02] p-3 transition md:min-h-[88px] md:p-4 ${work.pending ? "cursor-default opacity-80" : "hover:-translate-y-0.5 hover:bg-mint/[0.055]"}`,
+                                style: { borderColor: `${category.color}66` },
+                              },
+                              h(
+                                "div",
+                                null,
+                                h("p", { className: "font-jakarta text-[10px] font-extrabold uppercase tracking-[0.22em]", style: { color: category.color } }, String(index + 1).padStart(2, "0")),
+                                h("h4", { className: "mt-2 font-inter text-base font-black tracking-tight bright-gray md:text-lg" }, work.title),
+                                h("p", { className: "mt-1 font-jakarta text-[10px] font-extrabold uppercase tracking-[0.16em]", style: { color: category.color } }, work.type)
+                              ),
+                              h(
+                                "span",
+                                {
+                                  className:
+                                    "flex h-7 w-7 shrink-0 items-center justify-center border transition group-hover:translate-x-0.5",
+                                  style: { borderColor: `${category.color}80`, color: category.color },
+                                },
+                                h(ArrowRight, { size: 14, strokeWidth: 2.4 })
+                              )
+                            )
+                          )
+                        )
+                      : null
+                  );
+                })
+              )
+            )
+          )
+        );
+      }
+
+      function WorkSideNav() {
+        const [previewWork, setPreviewWork] = useState(null);
+        const [previewY, setPreviewY] = useState(null);
+        const previewColor = previewWork?.color || "#e1352d";
+        const showPreview = (work, event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          setPreviewY(rect.top + rect.height / 2);
+          setPreviewWork(work);
+        };
+
+        return h(
+          React.Fragment,
+          null,
+          previewWork
+            ? h(
+                "div",
+                {
+                  className:
+                    "pointer-events-none fixed right-[268px] z-40 hidden w-[240px] -translate-y-1/2 border bg-black/75 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.55)] backdrop-blur-sm xl:block",
+                  style: { borderColor: `${previewColor}77`, top: previewY ? `${previewY}px` : "53%" },
+                },
+                previewWork.preview
+                  ? h("img", {
+                      src: previewWork.preview,
+                      alt: `${previewWork.title}封面预览`,
+                      className: "aspect-video w-full object-cover opacity-80 grayscale-[8%]",
+                    })
+                  : h(
+                      "div",
+                      { className: "flex aspect-video w-full items-center justify-center bg-white/[0.035]" },
+                      h("span", { className: "font-jakarta text-xs font-extrabold uppercase tracking-[0.22em] text-white/65" }, "PREVIEW")
+                    )
+              )
+            : null,
+          h(
+            "nav",
+            {
+              className:
+                "group fixed right-4 top-[53%] z-40 hidden max-h-[72vh] w-[84px] -translate-y-1/2 overflow-y-auto border border-white/10 bg-black/85 p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)] transition-[width,padding] duration-300 scrollbar-none hover:w-[248px] hover:p-3 xl:block",
+              "aria-label": "作品快速导航",
+              onMouseLeave: () => {
+                setPreviewWork(null);
+                setPreviewY(null);
+              },
+            },
+            h("p", { className: "mb-3 text-center font-jakarta text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#d0d0d0] transition-all group-hover:text-left group-hover:text-[11px] group-hover:tracking-[0.28em]" }, "INDEX"),
+            h(
+              "div",
+              { className: "grid gap-3" },
+              workCategories.map((category) =>
+                h(
+                  "section",
+                  { key: category.key, className: "grid gap-1.5" },
                   h(
-                    "a",
+                    "div",
                     {
-                      key: work.href,
-                      href: work.href,
                       className:
-                        "group flex min-h-[112px] items-end justify-between border border-white/10 bg-white/[0.02] p-4 transition hover:-translate-y-1 hover:bg-white/[0.04] md:min-h-[138px] md:p-5",
-                      style: { borderColor: `${work.color}55` },
+                        "flex min-h-10 items-center justify-center border border-white/10 px-1 py-1 text-center font-jakarta text-[10px] font-extrabold uppercase leading-3 tracking-[0.08em] transition-all group-hover:justify-start group-hover:px-2 group-hover:text-left group-hover:text-[11px] group-hover:tracking-[0.2em]",
+                      style: { color: category.color, borderColor: `${category.color}33` },
+                      title: category.title,
                     },
                     h(
-                      "div",
-                      null,
-                      h("p", { className: "font-jakarta text-xs font-extrabold uppercase tracking-[0.24em] text-[#9f9f9f]" }, `0${index + 1}`),
-                      h("h3", { className: "mt-3 font-inter text-2xl font-black tracking-tight bright-gray md:text-3xl" }, work.title),
-                      h("p", { className: "mt-2 font-jakarta text-xs font-extrabold uppercase tracking-[0.18em]", style: { color: work.color } }, work.type)
-                    ),
-                    h(
                       "span",
+                      { className: "grid gap-0.5 group-hover:hidden" },
+                      category.sideTitle.map((line) => h("span", { key: line, className: "block" }, line))
+                    ),
+                    h("span", { className: "hidden group-hover:block" }, category.title)
+                  ),
+                  category.works.map((work, index) =>
+                    h(
+                      work.pending ? "div" : "a",
                       {
+                        key: `${work.href}-${work.title}`,
+                        ...(work.pending ? {} : { href: work.href }),
                         className:
-                          "flex h-9 w-9 items-center justify-center border transition group-hover:translate-x-1",
-                        style: { borderColor: `${work.color}80`, color: work.color },
+                          `flex items-center gap-2 border border-white/10 bg-white/[0.025] px-2 py-1.5 transition ${work.pending ? "cursor-default opacity-70" : "hover:bg-white/[0.07]"}`,
+                        style: { borderColor: `${work.color}33` },
+                        title: work.title,
+                        onMouseEnter: (event) => showPreview(work, event),
+                        onMouseMove: (event) => showPreview(work, event),
+                        onFocus: (event) => showPreview(work, event),
                       },
-                      h(ArrowRight, { size: 17, strokeWidth: 2.4 })
+                      h("span", { className: "h-2 w-2 shrink-0", style: { backgroundColor: work.color } }),
+                      h("span", { className: "w-6 shrink-0 font-jakarta text-[11px] font-extrabold text-white/55" }, String(index + 1).padStart(2, "0")),
+                      h("span", { className: "max-w-0 overflow-hidden whitespace-nowrap font-inter text-sm font-bold text-[#d8d8d8] opacity-0 transition-all duration-300 group-hover:max-w-[170px] group-hover:opacity-100" }, work.title)
                     )
                   )
                 )
@@ -1004,8 +1323,50 @@
         );
       }
 
+      function OriginalNotice() {
+        return h(
+          "aside",
+          {
+            className: "pointer-events-none fixed bottom-3 left-3 z-40 hidden max-w-[320px] border border-white/10 bg-black/70 px-3 py-2 text-left md:bottom-4 md:left-4 md:block",
+            "aria-label": "原创声明",
+          },
+          h("p", { className: "font-inter text-xs font-bold leading-5 text-[#d8d8d8]" }, "作品均为原创，禁止转载或应用"),
+          h("p", { className: "mt-1 font-jakarta text-[9px] font-extrabold uppercase leading-4 tracking-[0.16em] text-white/45" }, "All works are original. Reproduction or use is prohibited."),
+          h("p", { className: "mt-2 font-jakarta text-[9px] font-extrabold uppercase leading-4 tracking-[0.16em] text-white/55" }, "COPYRIGHT@LIZHENGHAO"),
+          h("p", { className: "font-jakarta text-[9px] font-extrabold uppercase leading-4 tracking-[0.16em] text-white/45" }, "ALL RIGHTS RESERVED")
+        );
+      }
+
+      function useSingleVideoPlayback() {
+        useEffect(() => {
+          const stopOtherVideos = (event) => {
+            const currentVideo = event.target;
+            if (!currentVideo || currentVideo.tagName !== "VIDEO" || !currentVideo.controls) {
+              return;
+            }
+
+            document.querySelectorAll("video[controls]").forEach((video) => {
+              if (video !== currentVideo && !video.paused) {
+                video.pause();
+              }
+            });
+          };
+
+          document.addEventListener("play", stopOtherVideos, true);
+          return () => document.removeEventListener("play", stopOtherVideos, true);
+        }, []);
+      }
+
       function CollapsibleDetails({ color = "#e1352d", children }) {
         const [open, setOpen] = useState(false);
+        const closeAndReturnToVideo = (event) => {
+          setOpen(false);
+          const scope = event.currentTarget.closest("[data-work-video-scope]") || event.currentTarget.closest("section");
+          const target = scope?.querySelector("video, [data-work-video-placeholder]") || scope;
+          window.setTimeout(() => {
+            target?.scrollIntoView?.({ behavior: "smooth", block: "start" });
+          }, 0);
+        };
 
         return h(
           "div",
@@ -1015,21 +1376,26 @@
             {
               type: "button",
               className:
-                "group flex w-full items-center justify-between px-5 py-4 text-left transition hover:brightness-110 md:px-6 md:py-5",
-              style: { backgroundColor: color },
+                "group flex w-full items-center justify-between border bg-white/[0.025] px-5 py-4 text-left transition hover:bg-white/[0.055] md:px-6 md:py-5",
+              style: { borderColor: `${color}66` },
               onClick: () => setOpen((value) => !value),
               "aria-expanded": open,
             },
-            h("span", { className: "font-jakarta text-base font-extrabold uppercase tracking-[0.18em] text-[#070b0a] md:text-xl" }, "作品详细内容"),
             h(
               "span",
               { className: "flex items-center gap-3" },
-              h("span", { className: "font-jakarta text-xs font-extrabold uppercase tracking-[0.22em] text-[#070b0a]" }, open ? "收起" : "展开"),
+              h("span", { className: "h-6 w-1", style: { backgroundColor: color } }),
+              h("span", { className: "font-jakarta text-base font-extrabold uppercase tracking-[0.18em] text-[#e6e6e6] md:text-lg" }, "作品详细内容")
+            ),
+            h(
+              "span",
+              { className: "flex items-center gap-3" },
+              h("span", { className: "font-jakarta text-xs font-extrabold uppercase tracking-[0.22em]", style: { color } }, open ? "收起" : "展开"),
               h(ChevronDown, {
                 size: 18,
                 strokeWidth: 2.4,
                 className: `transition-transform ${open ? "rotate-180" : ""}`,
-                style: { color: "#070b0a" },
+                style: { color },
               })
             )
           ),
@@ -1043,16 +1409,21 @@
                   {
                     type: "button",
                     className:
-                      "mt-6 flex w-full items-center justify-between px-5 py-4 text-left transition hover:brightness-110 md:px-6 md:py-5",
-                    style: { backgroundColor: color },
-                    onClick: () => setOpen(false),
+                      "mt-6 flex w-full items-center justify-between border bg-white/[0.025] px-5 py-4 text-left transition hover:bg-white/[0.055] md:px-6 md:py-5",
+                    style: { borderColor: `${color}66` },
+                    onClick: closeAndReturnToVideo,
                   },
-                  h("span", { className: "font-jakarta text-base font-extrabold uppercase tracking-[0.18em] text-[#070b0a] md:text-xl" }, "收起作品详细内容"),
+                  h(
+                    "span",
+                    { className: "flex items-center gap-3" },
+                    h("span", { className: "h-6 w-1", style: { backgroundColor: color } }),
+                    h("span", { className: "font-jakarta text-base font-extrabold uppercase tracking-[0.18em] text-[#e6e6e6] md:text-lg" }, "收起作品详细内容")
+                  ),
                   h(ChevronDown, {
                     size: 18,
                     strokeWidth: 2.4,
                     className: "rotate-180",
-                    style: { color: "#070b0a" },
+                    style: { color },
                   })
                 )
               )
@@ -1293,13 +1664,13 @@
                   h("h3", { className: "mt-2 font-inter text-3xl font-black tracking-tight bright-gray md:text-5xl" }, "IP形象介绍"),
                   h(
                     "div",
-                    { className: "mt-6 grid gap-3 md:gap-5" },
+                    { className: "mt-6 grid gap-4 md:grid-cols-2 md:gap-6" },
                     fengtianIpImages.map((image) =>
                       h("img", {
                         key: image.src,
                         src: image.src,
                         alt: image.alt,
-                        className: fengtianMediaClass,
+                        className: "block h-auto w-full object-contain",
                       })
                     )
                   )
@@ -1329,7 +1700,7 @@
               h("img", {
                 src: "./assets/fengtian-16-ending-21x9.png",
                 alt: "奉天职造局结尾画面",
-                className: fengtianMediaClass,
+                className: "mt-5 block h-auto w-full object-contain",
               })
               )
             )
@@ -1761,7 +2132,7 @@
                 controls: true,
                 playsInline: true,
                 preload: "metadata",
-                poster: "./assets/yanan-poster-new-16x9.png",
+                poster: "./assets/yanan-poster-latest.png",
               }),
               h(
                 CollapsibleDetails,
@@ -1803,7 +2174,7 @@
               h("img", {
                 src: "./assets/yanan-ending-replaced.png",
                 alt: "长征记忆到延安去片尾图片",
-                className: yananImageClass,
+                className: "mt-5 block h-auto w-full object-contain",
               })
               )
             )
@@ -1932,7 +2303,7 @@
                 controls: true,
                 playsInline: true,
                 preload: "metadata",
-                poster: "./assets/qifeng-poster-match.jpg",
+                poster: "./assets/qifeng-poster-latest.png",
               }),
               h(
                 CollapsibleDetails,
@@ -1961,8 +2332,121 @@
         );
       }
 
+      function CoscoSection() {
+        const oceanBlue = "#38bdf8";
+        const coscoMediaClass = "block h-auto w-full object-contain";
+
+        return h(
+          "section",
+          { className: "border-t border-white/10 bg-black px-5 py-16 md:px-10 md:py-24" },
+          h("span", { id: "cosco", className: "block scroll-mt-24" }),
+          h(
+            "div",
+            { className: "mx-auto max-w-7xl" },
+            h(
+              "div",
+              { className: "mb-8 text-left" },
+              h("p", { className: "font-jakarta text-sm font-extrabold uppercase md:text-lg", style: { color: oceanBlue } }, "COSCO SHIPPING GROUP"),
+              h("h2", { className: "mt-3 font-inter text-4xl font-black tracking-tight bright-gray md:text-6xl" }, "中远航运集团-AIGC视频制作", h("span", { style: { color: oceanBlue } }, "#")),
+              h(
+                "div",
+                { className: "mt-4 flex flex-wrap items-center gap-3 font-jakarta text-sm font-extrabold uppercase tracking-[0.18em] text-[#d8d8d8] md:text-base" },
+                h("span", null, "AIGC宣传视频"),
+                h("span", { className: "h-px w-8 bg-white/35" }),
+                h("span", null, "AIGC Promotional Video")
+              )
+            ),
+            h(
+              "div",
+              { className: "grid gap-0" },
+              h(
+                "div",
+                { className: "grid gap-0", "data-work-video-scope": true },
+                h(
+                  "div",
+                  { className: "mb-6" },
+                  h("p", { className: "font-jakarta text-base font-extrabold uppercase md:text-xl", style: { color: oceanBlue } }, "DIGITAL SHIP SERVICE SALON"),
+                  h("h3", { className: "mt-2 font-inter text-3xl font-black tracking-tight bright-gray md:text-5xl" }, "数智船服沙龙", h("span", { style: { color: oceanBlue } }, "#"))
+                ),
+                h("video", {
+                  className: coscoMediaClass,
+                  src: coscoShipserviceVideo,
+                  controls: true,
+                  playsInline: true,
+                  preload: "metadata",
+                  poster: "./assets/cosco-shipservice-poster.png",
+                }),
+                h(
+                  CollapsibleDetails,
+                  { color: oceanBlue },
+                  h(
+                    "div",
+                    { className: "pt-8 md:pt-12" },
+                    h("p", { className: "font-jakarta text-base font-extrabold uppercase md:text-xl", style: { color: oceanBlue } }, "DIGITAL SHIP SERVICE SALON"),
+                    h("h3", { className: "mt-2 font-inter text-3xl font-black tracking-tight bright-gray md:text-5xl" }, "数智船服沙龙分镜"),
+                    h(
+                      "p",
+                      { className: "mt-4 max-w-4xl font-inter text-sm font-semibold leading-7 text-[#d8d8d8] md:text-base md:leading-8" },
+                      "围绕中远海运船服的数智化服务场景，建立海洋科技、智慧平台与品牌传播之间的视觉连接，呈现企业服务升级的清晰叙事。"
+                    ),
+                    h(
+                      "div",
+                      { className: "mt-6 grid gap-3 md:grid-cols-2 md:gap-5" },
+                      coscoShipserviceImages.map((image) =>
+                        h("img", {
+                          key: image.src,
+                          src: image.src,
+                          alt: image.alt,
+                          className: coscoMediaClass,
+                        })
+                      )
+                    )
+                  )
+                )
+              ),
+              h(
+                "div",
+                { id: "cosco-energy", className: "mt-12 scroll-mt-24 border-t border-white/10 pt-10 md:mt-16 md:pt-12", "data-work-video-scope": true },
+                h("p", { className: "font-jakarta text-base font-extrabold uppercase md:text-xl", style: { color: oceanBlue } }, "ZHONGYUAN ENERGY VIDEO"),
+                h("h3", { className: "mt-2 font-inter text-3xl font-black tracking-tight bright-gray md:text-5xl" }, "中原能源视频", h("span", { style: { color: oceanBlue } }, "#")),
+                h("video", {
+                  className: "mt-6 block h-auto w-full object-contain",
+                  src: coscoEnergyVideo,
+                  controls: true,
+                  playsInline: true,
+                  preload: "metadata",
+                  poster: "./assets/cosco-energy-02.png",
+                }),
+                h(
+                  CollapsibleDetails,
+                  { color: oceanBlue },
+                  h(
+                    "div",
+                    { className: "pt-8 md:pt-12" },
+                    h("p", { className: "font-jakarta text-base font-extrabold uppercase md:text-xl", style: { color: oceanBlue } }, "STORYBOARD"),
+                    h("h3", { className: "mt-2 font-inter text-3xl font-black tracking-tight bright-gray md:text-5xl" }, "中原能源视频分镜"),
+                    h(
+                      "div",
+                      { className: "mt-6 grid gap-3 md:grid-cols-2 md:gap-5" },
+                      coscoEnergyImages.map((image) =>
+                        h("img", {
+                          key: image.src,
+                          src: image.src,
+                          alt: image.alt,
+                          className: coscoMediaClass,
+                        })
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      }
+
       function KanjianSection() {
-        const rose = "#ff6b8f";
+        const rose = "#facc15";
         const kanjianMediaClass = "block h-auto w-full object-contain";
 
         return h(
@@ -1990,7 +2474,7 @@
               { className: "grid gap-0" },
               h(
                 "div",
-                { className: "flex aspect-video w-full items-center justify-center bg-[#050505] ring-1 ring-white/10" },
+                { className: "flex aspect-video w-full items-center justify-center bg-[#050505] ring-1 ring-white/10", "data-work-video-placeholder": true },
                 h(
                   "div",
                   { className: "text-center" },
@@ -2025,6 +2509,198 @@
         );
       }
 
+      function LiaoningSection() {
+        const liaoningBlue = "#60a5fa";
+
+        return h(
+          "section",
+          { id: "liaoning-promo", className: "scroll-mt-24 border-t border-white/10 bg-black px-5 py-16 md:px-10 md:py-24", "data-work-video-scope": true },
+          h(
+            "div",
+            { className: "mx-auto max-w-7xl" },
+            h(
+              "div",
+              { className: "mb-8 text-left" },
+              h("p", { className: "font-jakarta text-sm font-extrabold uppercase md:text-lg", style: { color: liaoningBlue } }, "LIAONING SCHOOL-ENTERPRISE COLLABORATION"),
+              h("h2", { className: "mt-3 font-inter text-4xl font-black tracking-tight bright-gray md:text-6xl" }, "第三届辽宁校企协同宣传片", h("span", { style: { color: liaoningBlue } }, "#")),
+              h(
+                "div",
+                { className: "mt-4 flex flex-wrap items-center gap-3 font-jakarta text-sm font-extrabold uppercase tracking-[0.18em] text-[#d8d8d8] md:text-base" },
+                h("span", null, "AIGC宣传视频"),
+                h("span", { className: "h-px w-8 bg-white/35" }),
+                h("span", null, "AIGC Promotional Video")
+              )
+            ),
+            h("video", {
+              className: "block h-auto w-full object-contain",
+              src: liaoningVideo,
+              controls: true,
+              playsInline: true,
+              preload: "metadata",
+              poster: "./assets/liaoning-promo-poster.jpg",
+            })
+          )
+        );
+      }
+
+      function BrandProject({ project, onClose }) {
+        return h(
+          "article",
+          { className: "mt-10 border-t border-white/10 pt-8 md:mt-12 md:pt-10" },
+          h(
+            "div",
+            { className: "mb-7 text-left" },
+            h("p", { className: "font-jakarta text-sm font-extrabold uppercase md:text-lg", style: { color: project.color } }, project.eyebrow),
+            h("h3", { className: "mt-3 font-inter text-3xl font-black tracking-tight bright-gray md:text-5xl" }, project.title, h("span", { style: { color: project.color } }, "#")),
+            h(
+              "div",
+              { className: "mt-4 flex flex-wrap items-center gap-3 font-jakarta text-sm font-extrabold uppercase tracking-[0.18em] text-[#d8d8d8] md:text-base" },
+              h("span", null, project.type),
+              h("span", { className: "h-px w-8 bg-white/35" }),
+              h("span", null, project.english)
+            )
+          ),
+          h(
+            "div",
+            { className: "grid gap-3 md:gap-5" },
+            project.images.map((image) =>
+              h("img", {
+                key: image.src,
+                src: image.src,
+                alt: image.alt,
+                className: "block h-auto w-full object-contain",
+              })
+            )
+          ),
+          h(
+            "button",
+            {
+              type: "button",
+              className:
+                "mt-6 flex w-full items-center justify-between border bg-white/[0.025] px-5 py-4 text-left transition hover:bg-white/[0.055] md:px-6 md:py-5",
+              style: { borderColor: `${project.color}66` },
+              onClick: onClose,
+            },
+            h(
+              "span",
+              { className: "flex items-center gap-3" },
+              h("span", { className: "h-6 w-1", style: { backgroundColor: project.color } }),
+              h("span", { className: "font-jakarta text-base font-extrabold uppercase tracking-[0.18em] text-[#e6e6e6] md:text-lg" }, "收起品牌内容")
+            ),
+            h(ChevronDown, {
+              size: 18,
+              strokeWidth: 2.4,
+              className: "rotate-180",
+              style: { color: project.color },
+            })
+          )
+        );
+      }
+
+      function BrandSection() {
+        const brandOrange = "#f59e0b";
+        const [activeBrandId, setActiveBrandId] = useState(null);
+        const cardGridRef = useRef(null);
+        const activeBrand = brandProjects.find((project) => project.id === activeBrandId);
+        const closeBrand = () => {
+          setActiveBrandId(null);
+          window.setTimeout(() => {
+            cardGridRef.current?.scrollIntoView?.({ behavior: "smooth", block: "start" });
+          }, 0);
+        };
+
+        return h(
+          "section",
+          { className: "border-t border-white/10 bg-black px-5 py-16 md:px-10 md:py-24" },
+          h(
+            "div",
+            { className: "mx-auto max-w-7xl" },
+            h(
+              "div",
+              { className: "mb-8 text-left md:mb-10" },
+              h("p", { className: "font-jakarta text-sm font-extrabold uppercase md:text-lg", style: { color: brandOrange } }, "BRAND DESIGN"),
+              h("h2", { className: "mt-3 font-inter text-4xl font-black tracking-tight bright-gray md:text-6xl" }, "品牌设计", h("span", { style: { color: brandOrange } }, "#"))
+            ),
+            h(
+              "div",
+              { ref: cardGridRef, className: "grid gap-4 md:grid-cols-3 md:gap-5" },
+              brandProjects.map((project) =>
+                h(
+                  "button",
+                  {
+                    key: project.id,
+                    id: project.id,
+                    type: "button",
+                    className:
+                      "group scroll-mt-24 border bg-white/[0.018] p-3 text-left transition hover:-translate-y-1 hover:bg-white/[0.045]",
+                    style: {
+                      borderColor: activeBrandId === project.id ? `${project.color}` : `${project.color}55`,
+                    },
+                    onClick: () => setActiveBrandId((currentId) => (currentId === project.id ? null : project.id)),
+                    "aria-expanded": activeBrandId === project.id,
+                  },
+                  h("p", { className: "font-jakarta text-[10px] font-extrabold uppercase tracking-[0.22em]", style: { color: project.color } }, project.english),
+                  h("h3", { className: "mt-2 font-inter text-xl font-black tracking-tight text-[#eeeeee] md:text-2xl" }, project.title),
+                  h("img", {
+                    src: project.cover || project.images[0].src,
+                    alt: `${project.title}封面`,
+                    className: "mt-4 aspect-video w-full object-cover opacity-90 transition group-hover:opacity-100",
+                  })
+                )
+              )
+            ),
+            activeBrand ? h(BrandProject, { key: activeBrand.id, project: activeBrand, onClose: closeBrand }) : null
+          )
+        );
+      }
+
+      function ClosingSection() {
+        return h(
+          "section",
+          { className: "border-t border-white/10 bg-black px-5 py-20 md:px-10 md:py-28" },
+          h(
+            "div",
+            { className: "mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.08fr_0.92fr] md:items-end" },
+            h(
+              "div",
+              null,
+              h("p", { className: "font-jakarta text-xs font-extrabold uppercase tracking-[0.32em] text-[#bcbcbc]" }, "THANK YOU FOR WATCHING"),
+              h("h2", { className: "mt-5 max-w-3xl font-inter text-4xl font-black leading-tight tracking-tight text-[#e6e6e6] md:text-6xl" }, "感谢观览，期待下一次共同创作。"),
+              h(
+                "p",
+                { className: "mt-6 max-w-2xl font-inter text-base font-semibold leading-8 text-[#cfcfcf] md:text-lg md:leading-9" },
+                "承接 AIGC 影像制作、XR/MR 虚拟体验、企业宣传片、品牌视觉、IP 动画、展陈影像与艺术创作等商业项目。欢迎通过微信沟通合作需求，也欢迎交流更多跨媒介创作的可能。"
+              ),
+              h(
+                "div",
+                { className: "mt-8 flex flex-wrap items-center gap-4 border-t border-white/10 pt-6" },
+                h("img", {
+                  src: "./assets/qr-wechat-aligned.png",
+                  alt: "微信二维码",
+                  className: "h-24 w-24 object-contain md:h-28 md:w-28",
+                }),
+                h(
+                  "div",
+                  null,
+                  h("p", { className: "font-inter text-lg font-black text-[#eeeeee]" }, "商业合作 / 艺术共创"),
+                  h("p", { className: "mt-2 font-jakarta text-xs font-extrabold uppercase tracking-[0.22em] text-[#bcbcbc]" }, "SCAN WECHAT TO CONNECT")
+                )
+              )
+            ),
+            h(
+              "div",
+              { className: "flex flex-col items-start gap-5 md:items-end md:text-right" },
+              h("img", {
+                src: "./assets/haita-logo-gray.png",
+                alt: "海獭工作室",
+                className: "w-full max-w-[520px] object-contain opacity-90",
+              }),
+              h("p", { className: "max-w-xl font-inter text-sm font-semibold leading-7 text-[#cfcfcf] md:text-base md:leading-8" }, "保持影像的实验性，也保持项目落地的秩序感。愿每一次合作，都让视觉、技术与叙事抵达更准确的位置。")
+            )
+          )
+        );
+      }
+
       function Contact() {
         return h(
           "footer",
@@ -2035,32 +2711,49 @@
             h(
               "div",
               null,
-              h("p", { className: "font-inter text-sm font-bold bright-gray" }, "李政浩 / 个人作品集"),
-              h("p", { className: "mt-2 font-inter text-sm text-[#cfcfcf]" }, "3301162147@qq.com · 13236944822")
-            ),
-            h("p", { className: "font-jakarta text-xs font-bold uppercase text-[#bcbcbc]" }, "PORTFOLIO")
+                h("p", { className: "font-inter text-sm font-bold bright-gray" }, "李政浩 / 个人作品集"),
+                h("p", { className: "mt-2 font-inter text-sm text-[#cfcfcf]" }, "3301162147@qq.com · 13236944822")
+              ),
+            h(
+              "div",
+              { className: "flex flex-col items-start gap-3 md:items-end" },
+              h("img", {
+                src: "./assets/qr-wechat-aligned.png",
+                alt: "微信二维码",
+                className: "h-20 w-20 object-contain md:h-24 md:w-24",
+              }),
+              h("p", { className: "font-jakarta text-xs font-bold uppercase text-[#bcbcbc]" }, "PORTFOLIO")
+            )
           )
         );
       }
 
       function App() {
+        useSingleVideoPlayback();
+
         return h(
           React.Fragment,
           null,
+          h(WorkSideNav),
+          h(OriginalNotice),
           h(Hero),
           h(ProfileSection),
           h(Works),
           h(VideoSection),
+          h(PiyingxiSection),
+          h(KanjianSection),
           h(XiaoluoSection),
+          h(DongpoSection),
+          h(TianwenSection),
+          h(YananSection),
           h(FengtianSection),
           h(LongSection),
           h(MuguiyingSection),
-          h(DongpoSection),
-          h(YananSection),
-          h(TianwenSection),
-          h(PiyingxiSection),
           h(QifengSection),
-          h(KanjianSection),
+          h(CoscoSection),
+          h(LiaoningSection),
+          h(BrandSection),
+          h(ClosingSection),
           h(Contact)
         );
       }
